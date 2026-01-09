@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Irrigation Dashboard - AgriTracker{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-tint text-primary"></i> Irrigation Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5><i class="fas fa-exclamation-triangle"></i> Pending Irrigation</h5>
+            </div>
+            <div class="card-body">
+                {% if pending_irrigation %}
+                    {% for irrigation in pending_irrigation %}
+                    <div class="card mb-2 irrigation-pending">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ irrigation.crop.crop_type.name }}</h6>
+                                    <small class="text-muted">
+                                        {{ irrigation.crop.farm.name }} | 
+                                        {{ irrigation.scheduled_date|date:"M d, Y H:i" }}
+                                    </small>
+                                    <p class="mb-1">
+                                        <i class="fas fa-clock"></i> {{ irrigation.duration_minutes }} minutes
+                                        {% if irrigation.water_amount_liters %}
+                                        | <i class="fas fa-tint"></i> {{ irrigation.water_amount_liters }}L
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <a href="{% url 'complete_irrigation' irrigation.id %}" 
+                                   class="btn btn-success btn-sm">
+                                    <i class="fas fa-check"></i> Complete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> No pending irrigation tasks!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-check"></i> Completed Today</h5>
+            </div>
+            <div class="card-body">
+                {% if completed_today %}
+                    {% for irrigation in completed_today %}
+                    <div class="card mb-2 irrigation-completed">
+                        <div class="card-body">
+                            <h6 class="mb-1">{{ irrigation.crop.crop_type.name }}</h6>
+                            <small class="text-muted">
+                                {{ irrigation.crop.farm.name }} | 
+                                Completed: {{ irrigation.completed_date|date:"H:i" }}
+                            </small>
+                            <p class="mb-1">
+                                <i class="fas fa-clock"></i> {{ irrigation.duration_minutes }} minutes
+                                {% if irrigation.water_amount_liters %}
+                                | <i class="fas fa-tint"></i> {{ irrigation.water_amount_liters }}L
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No irrigation completed today.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-lightbulb"></i> Irrigation Tips</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-sun text-warning"></i> Best Times</h6>
+                        <p>Water early morning (6-8 AM) or evening (6-8 PM) to minimize evaporation.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-thermometer-half text-info"></i> Weather Check</h6>
+                        <p>Avoid watering before rain. Check weather forecast to optimize irrigation.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-seedling text-success"></i> Growth Stage</h6>
+                        <p>Adjust water amounts based on crop growth stage and season.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

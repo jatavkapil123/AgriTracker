@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Crop Growing Guide - AgriTracker{% endblock %}
+
+{% block content %}
+<h2><i class="fas fa-book text-success"></i> Crop Growing Guide</h2>
+<p class="lead">Essential information for successful crop cultivation</p>
+
+<div class="row mb-4">
+    {% if crop_types %}
+        {% for crop_type in crop_types %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-leaf text-success"></i> {{ crop_type.name }}</h5>
+                    {% if crop_type.scientific_name %}
+                        <small class="text-muted">{{ crop_type.scientific_name }}</small>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Growing Season:</strong><br>
+                            <span class="badge bg-info">{{ crop_type.growing_season_days }} days</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Water Requirement:</strong><br>
+                            <span class="badge bg-{% if crop_type.water_requirement == 'high' %}danger{% elif crop_type.water_requirement == 'medium' %}warning{% else %}success{% endif %}">
+                                {{ crop_type.get_water_requirement_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No crop types available yet. Contact your administrator to add crop information.
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5><i class="fas fa-seedling"></i> Planting Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> Test soil pH before planting</li>
+                    <li><i class="fas fa-check text-success"></i> Choose appropriate season</li>
+                    <li><i class="fas fa-check text-success"></i> Prepare soil with organic matter</li>
+                    <li><i class="fas fa-check text-success"></i> Follow proper spacing guidelines</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-tint"></i> Watering Guide</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-clock text-primary"></i> Water early morning or evening</li>
+                    <li><i class="fas fa-thermometer text-warning"></i> Adjust for weather conditions</li>
+                    <li><i class="fas fa-leaf text-success"></i> Deep, less frequent watering</li>
+                    <li><i class="fas fa-eye text-info"></i> Monitor soil moisture regularly</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-bug"></i> Pest Management</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-search text-primary"></i> Regular crop inspection</li>
+                    <li><i class="fas fa-leaf text-success"></i> Use companion planting</li>
+                    <li><i class="fas fa-shield-alt text-warning"></i> Integrated pest management</li>
+                    <li><i class="fas fa-recycle text-info"></i> Crop rotation practices</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-calendar-alt"></i> Seasonal Calendar</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6><i class="fas fa-snowflake text-info"></i> Winter (Dec-Feb)</h6>
+                        <p>Plan for next season, prepare soil, maintain equipment</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6><i class="fas fa-seedling text-success"></i> Spring (Mar-May)</h6>
+                        <p>Plant warm-season crops, start irrigation systems</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6><i class="fas fa-sun text-warning"></i> Summer (Jun-Aug)</h6>
+                        <p>Monitor growth, manage irrigation, pest control</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6><i class="fas fa-leaf text-danger"></i> Fall (Sep-Nov)</h6>
+                        <p>Harvest crops, prepare for winter, soil preparation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

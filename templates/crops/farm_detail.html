@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ farm.name }} - AgriTracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-tractor text-success"></i> {{ farm.name }}</h2>
+    <a href="{% url 'add_crop' farm.id %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Add Crop
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="text-muted">Location</h5>
+                <p><i class="fas fa-map-marker-alt"></i> {{ farm.location }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="text-muted">Total Area</h5>
+                <p><i class="fas fa-expand-arrows-alt"></i> {{ farm.total_area }} acres</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="text-muted">Area Planted</h5>
+                <p><i class="fas fa-seedling"></i> {{ total_area_planted }} acres</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="text-muted">Total Crops</h5>
+                <p><i class="fas fa-leaf"></i> {{ crops.count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if crops_by_stage %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h4>Crops by Growth Stage</h4>
+        <div class="row">
+            {% for stage in crops_by_stage %}
+            <div class="col-md-2 mb-2">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">{{ stage.current_stage|title }}</h6>
+                        <span class="badge bg-primary">{{ stage.count }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-12">
+        <h4>Current Crops</h4>
+        {% if crops %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Crop Type</th>
+                            <th>Planted Date</th>
+                            <th>Days Since Planting</th>
+                            <th>Current Stage</th>
+                            <th>Area (acres)</th>
+                            <th>Expected Harvest</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for crop in crops %}
+                        <tr>
+                            <td>
+                                <i class="fas fa-leaf text-success"></i> 
+                                {{ crop.crop_type.name }}
+                            </td>
+                            <td>{{ crop.planted_date }}</td>
+                            <td>{{ crop.days_since_planting }} days</td>
+                            <td>
+                                <span class="badge bg-info stage-badge">
+                                    {{ crop.get_current_stage_display }}
+                                </span>
+                            </td>
+                            <td>{{ crop.area_planted }}</td>
+                            <td>{{ crop.expected_harvest_date }}</td>
+                            <td>
+                                <a href="{% url 'crop_detail' crop.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> 
+                No crops planted yet. <a href="{% url 'add_crop' farm.id %}">Add your first crop</a>!
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

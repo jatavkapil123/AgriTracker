@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ crop.crop_type.name }} Details - AgriTracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-leaf text-success"></i> {{ crop.crop_type.name }} Details</h2>
+    <a href="{% url 'farm_detail' crop.farm.id %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Farm
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Crop Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Farm:</strong> {{ crop.farm.name }}</p>
+                        <p><strong>Crop Type:</strong> {{ crop.crop_type.name }}</p>
+                        {% if crop.crop_type.scientific_name %}
+                        <p><strong>Scientific Name:</strong> <em>{{ crop.crop_type.scientific_name }}</em></p>
+                        {% endif %}
+                        <p><strong>Area Planted:</strong> {{ crop.area_planted }} acres</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Planted Date:</strong> {{ crop.planted_date }}</p>
+                        <p><strong>Days Since Planting:</strong> {{ crop.days_since_planting }} days</p>
+                        <p><strong>Current Stage:</strong> 
+                            <span class="badge bg-info">{{ crop.get_current_stage_display }}</span>
+                        </p>
+                        <p><strong>Expected Harvest:</strong> {{ crop.expected_harvest_date }}</p>
+                    </div>
+                </div>
+                {% if crop.notes %}
+                <div class="mt-3">
+                    <strong>Notes:</strong>
+                    <p class="text-muted">{{ crop.notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Crop Requirements</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Growing Season:</strong> {{ crop.crop_type.growing_season_days }} days</p>
+                <p><strong>Water Requirement:</strong> 
+                    <span class="badge bg-{% if crop.crop_type.water_requirement == 'high' %}danger{% elif crop.crop_type.water_requirement == 'medium' %}warning{% else %}success{% endif %}">
+                        {{ crop.crop_type.get_water_requirement_display }}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-tint"></i> Irrigation Schedule</h5>
+            </div>
+            <div class="card-body">
+                {% if irrigation_schedule %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Scheduled Date</th>
+                                    <th>Duration</th>
+                                    <th>Water Amount</th>
+                                    <th>Status</th>
+                                    <th>Completed Date</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for irrigation in irrigation_schedule %}
+                                <tr class="{% if not irrigation.completed %}table-warning{% endif %}">
+                                    <td>{{ irrigation.scheduled_date|date:"M d, Y H:i" }}</td>
+                                    <td>{{ irrigation.duration_minutes }} min</td>
+                                    <td>
+                                        {% if irrigation.water_amount_liters %}
+                                            {{ irrigation.water_amount_liters }}L
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if irrigation.completed %}
+                                            <span class="badge bg-success">Completed</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if irrigation.completed_date %}
+                                            {{ irrigation.completed_date|date:"M d, Y H:i" }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ irrigation.notes|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No irrigation schedule set for this crop yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
