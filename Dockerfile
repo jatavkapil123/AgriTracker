@@ -18,5 +18,8 @@ RUN python manage.py populate_sample_data
 # Expose port
 EXPOSE 8000
 
+# Entry point which is exutiable and not change by anyone
+ENTRYPOINT ["python"]
+
 # Start the server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
