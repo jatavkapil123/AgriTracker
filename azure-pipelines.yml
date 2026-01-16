@@ -20,7 +20,7 @@ stages:
   - job: Build
     displayName: Build
     pool:
-      name: Default          # ✅ self-hosted agent pool
+      vmImage: ubuntu-latest          # ✅ self-hosted agent pool
     steps:
     - task: Docker@2
       displayName: Build and push image to ACR
