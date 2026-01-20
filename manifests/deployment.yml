@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: jatavkapilagritracker 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jatavkapilagritracker
+  template:
+    metadata:
+      labels:
+        app: jatavkapilagritracker 
+    spec:
+      containers:
+        - name: jatavkapilagritracker 
+          image: agriacker.azurecr.io/jatavkapilagritracker
+          ports:
+          - containerPort: 80
